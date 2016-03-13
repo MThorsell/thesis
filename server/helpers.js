@@ -36,38 +36,38 @@ module.exports = {
           }
           else {
             console.log('Updated data item successfully');
-            //if relevant information is present, we create new spot
-            if(spot.name && spot.creator && spot.category && spot.location && spot.description && spot.start) {
-              params = {
-              TableName: 'Spots',
-              Item: {
-                "spotId": spot.spotId,
-                "name": spot.name,
-                "creator": spot.creator,
-                "category": spot.category,
-                "location": spot.location,
-                "description": spot.description,
-                "start": spot.start,
-                "end": spot.end
-                },
-              };
-              dbSchema.put(params, function(err, data) {
-                if (err) {
-                  console.error('error on item put', err);
-                  fail(err);
-                }  
-                else {
-                  success(data);
-                } 
-              });
-            }
-            else {
-              fail('Missing Fields when creating a spot');
-            }
           }
         });
       }
     });
+    //if relevant information is present, we create new spot
+    if(spot.name && spot.creator && spot.category && spot.location && spot.description && spot.start_time) {
+      params = {
+      TableName: 'Spots',
+      Item: {
+        "spotId": spot.spotId,
+        "name": spot.name,
+        "creator": spot.creator,
+        "category": spot.category,
+        "location": spot.location,
+        "description": spot.description,
+        "start_time": spot.start_time,
+        "end_time": spot.end_time
+        },
+      };
+      dbSchema.put(params, function(err, data) {
+        if (err) {
+          console.error('error on item put', err);
+          fail(error);
+        }  
+        else {
+          success(data);
+        } 
+      });
+    }
+    else {
+      fail('Missing Fields when creating a spot');
+    }
   },
   search: function(search, success, fail) {
     //search is a string
@@ -135,7 +135,7 @@ module.exports = {
       //FilterExpression: 'asdfsadf' //this will eventually be used to filter lat and long ranges
     };
     //find all spots 
-    dbSchema.query(params, function(err, data) {
+    dbSchema.scan(params, function(err, data) {
       if (err) {
         console.error("Unable to query get spots. Error:", JSON.stringify(err, null, 2));
         fail(err);
